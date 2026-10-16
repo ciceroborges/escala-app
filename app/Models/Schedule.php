@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ScheduleStatus;
+use App\Models\Concerns\LogsActivity;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['ministry_id', 'year', 'month', 'status', 'availability_deadline'])]
 class Schedule extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     private const MONTHS = [1 => 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -56,5 +57,10 @@ class Schedule extends Model
     public function isPublished(): bool
     {
         return $this->status === ScheduleStatus::Published;
+    }
+
+    public function activityLabel(): string
+    {
+        return "escala de {$this->label()}";
     }
 }

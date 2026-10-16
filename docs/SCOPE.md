@@ -6,8 +6,19 @@ repertório (com tom por cantor) e gerarem as mensagens de WhatsApp que hoje sã
 Referência real: ministério de louvor da igreja local do Cícero (escala e repertório de
 outubro/2026 enviados no grupo do WhatsApp + planilha do repertório).
 
-**Stack:** Laravel + Blade + Tailwind + Alpine, em Docker. Mobile first (320px+).
-**Banco:** próprio do projeto (não tem relação com o SmartEvento).
+**Stack:** Laravel 13 + Inertia + Vue 3 + Tailwind 4, em Docker (Sail). Mobile first (320px+), **PWA**
+(instala na tela inicial). Visual baseado no projeto alro (TailAdmin).
+**Banco:** próprio do projeto (não tem relação com o SmartEvento). Código e banco em inglês; telas em português.
+
+**UX — qualquer pessoa precisa conseguir usar sem manual:**
+- Checklist "Primeiros passos" na tela inicial do líder (equipe → músicas → abrir mês → gerar → publicar).
+- Cada mês é um passo a passo: disponibilidade → gerar → ajustar → publicar e enviar.
+- Telas vazias explicam o que fazer e têm um botão de ação; dicas curtas que podem ser fechadas.
+- Padrões prontos (funções, ritmo, limite 2x/mês) para funcionar sem configurar nada.
+- Membro comum vê só o essencial: próximos cultos e "marcar quando não posso".
+
+**Auditoria:** activity log de todas as ações (quem, o quê, antes/depois). Nenhuma ação sem usuário: o que roda
+sem login (seed, console, jobs) fica no nome do usuário 1, **Webmaster**, criado por padrão.
 
 ---
 

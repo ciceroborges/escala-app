@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\MemberRole;
 use App\Enums\Permission;
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'monthly_limit', 'fixed_position_id', 'active'])]
 class Member extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected function casts(): array
     {
@@ -72,5 +73,10 @@ class Member extends Model
     public function hasJoined(): bool
     {
         return $this->user_id !== null;
+    }
+
+    public function activityLabel(): string
+    {
+        return "membro {$this->name}";
     }
 }

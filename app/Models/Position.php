@@ -2,21 +2,23 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[Fillable(['ministry_id', 'name', 'emoji', 'uses_microphone', 'min_per_service', 'max_per_service', 'sort_order'])]
+#[Fillable(['ministry_id', 'name', 'emoji', 'uses_microphone', 'is_vocal', 'min_per_service', 'max_per_service', 'sort_order'])]
 class Position extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected function casts(): array
     {
         return [
             'uses_microphone' => 'boolean',
+            'is_vocal' => 'boolean',
             'min_per_service' => 'integer',
             'max_per_service' => 'integer',
         ];
@@ -30,5 +32,10 @@ class Position extends Model
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(Member::class);
+    }
+
+    public function activityLabel(): string
+    {
+        return "função {$this->name}";
     }
 }

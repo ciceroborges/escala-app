@@ -17,6 +17,9 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    /** Criado na migration; responde pelas ações feitas sem usuário logado. */
+    public const WEBMASTER_ID = 1;
+
     public function memberships(): HasMany
     {
         return $this->hasMany(Member::class);

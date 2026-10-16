@@ -10,7 +10,21 @@ use PHPUnit\Framework\TestCase;
 /** Ministério real (outubro/2026) como base: 4 domingos, um único tecladista, líder fixa. */
 class ScheduleGeneratorTest extends TestCase
 {
-    private const VOCAL = 1, DM = 2, KEYS = 3, ACOUSTIC = 4, GUITAR = 5, BASS = 6, DRUMS = 7, DESK = 8;
+    private const VOCAL = 1;
+
+    private const DM = 2;
+
+    private const KEYS = 3;
+
+    private const ACOUSTIC = 4;
+
+    private const GUITAR = 5;
+
+    private const BASS = 6;
+
+    private const DRUMS = 7;
+
+    private const DESK = 8;
 
     private const SERVICES = [101 => '2026-10-04', 102 => '2026-10-11', 103 => '2026-10-18', 104 => '2026-10-25'];
 
@@ -149,6 +163,19 @@ class ScheduleGeneratorTest extends TestCase
         }
 
         $this->assertSame([], $backToBack, 'membros em semanas seguidas');
+    }
+
+    public function test_fills_optional_slots_when_people_have_quota_left(): void
+    {
+        $result = $this->generate();
+
+        $optional = 0;
+        foreach ($result->assignments as $slots) {
+            $optional += count($slots[self::BASS]) + count($slots[self::ACOUSTIC]) + count($slots[self::DM]);
+        }
+
+        // baixo, violão e DM têm gente com cota sobrando: não podem ficar vazios o mês todo
+        $this->assertGreaterThanOrEqual(6, $optional);
     }
 
     public function test_explains_why_a_slot_could_not_be_filled(): void

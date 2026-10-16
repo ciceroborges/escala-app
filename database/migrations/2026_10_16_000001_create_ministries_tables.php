@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('emoji', 16)->nullable();
             $table->boolean('uses_microphone')->default(false);
+            $table->boolean('is_vocal')->default(false);
             $table->unsignedTinyInteger('min_per_service')->default(0);
             $table->unsignedTinyInteger('max_per_service')->default(1);
             $table->unsignedSmallInteger('sort_order')->default(0);

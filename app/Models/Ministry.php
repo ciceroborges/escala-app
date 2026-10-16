@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['name', 'church_name', 'created_by'])]
 class Ministry extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     public function creator(): BelongsTo
     {
@@ -41,5 +42,10 @@ class Ministry extends Model
     public function songCategories(): HasMany
     {
         return $this->hasMany(SongCategory::class);
+    }
+
+    public function activityLabel(): string
+    {
+        return "ministério {$this->name}";
     }
 }

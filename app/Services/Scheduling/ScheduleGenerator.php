@@ -20,6 +20,9 @@ class ScheduleGenerator implements IScheduleGenerator
 
     private const BACK_TO_BACK_COST = 10;
 
+    /** Vaga opcional preenchida vale um pouco: cobre mais o culto sem atropelar mínimo nem rodízio. */
+    private const OPTIONAL_REWARD = 3;
+
     private GenerationInput $input;
 
     private Randomizer $random;
@@ -57,10 +60,15 @@ class ScheduleGenerator implements IScheduleGenerator
                 $this->fill($serviceId, $positionId, $min, $slots, $inService, $counts, $previous, false);
             }
 
-            // vaga opcional (até o máximo) só com quem já está no culto: não gasta cota do mês
+            // vagas opcionais (até o máximo): primeiro quem já está no culto, que não gasta cota;
+            // depois quem ainda tem cota no mês e não serviu no culto anterior
             foreach (array_keys($this->input->positions) as $positionId) {
                 $max = $this->input->positions[$positionId]['max'];
                 $this->fill($serviceId, $positionId, $max, $slots, $inService, $counts, $previous, true);
+            }
+            foreach ($this->positionsByScarcity($serviceId) as $positionId) {
+                $max = $this->input->positions[$positionId]['max'];
+                $this->fill($serviceId, $positionId, $max, $slots, $inService, $counts, $previous, false, skipPrevious: true);
             }
 
             foreach (array_keys($inService) as $memberId) {
@@ -105,7 +113,7 @@ class ScheduleGenerator implements IScheduleGenerator
     }
 
     private function fill(int $serviceId, int $positionId, int $target, array &$slots, array &$inService,
-        array $counts, array $previous, bool $onlyAlreadyInService): void
+        array $counts, array $previous, bool $onlyAlreadyInService, bool $skipPrevious = false): void
     {
         while (count($slots[$positionId]) < $target) {
             $best = null;
@@ -113,6 +121,9 @@ class ScheduleGenerator implements IScheduleGenerator
 
             foreach ($this->input->members as $memberId => $member) {
                 if ($onlyAlreadyInService && ! isset($inService[$memberId])) {
+                    continue;
+                }
+                if ($skipPrevious && isset($previous[$memberId]) && ! isset($inService[$memberId])) {
                     continue;
                 }
                 if (! $this->canTake($memberId, $serviceId, $positionId, $slots, $inService, $counts)) {
@@ -213,7 +224,9 @@ class ScheduleGenerator implements IScheduleGenerator
 
         foreach ($assignments as $slots) {
             foreach ($slots as $positionId => $memberIds) {
-                $cost += max(0, $this->input->positions[$positionId]['min'] - count($memberIds)) * self::GAP_COST;
+                $min = $this->input->positions[$positionId]['min'];
+                $cost += max(0, $min - count($memberIds)) * self::GAP_COST;
+                $cost -= max(0, count($memberIds) - $min) * self::OPTIONAL_REWARD;
             }
             $current = array_unique(array_merge(...array_values($slots) ?: [[]]));
             $cost += count(array_intersect($current, $previous)) * self::BACK_TO_BACK_COST;

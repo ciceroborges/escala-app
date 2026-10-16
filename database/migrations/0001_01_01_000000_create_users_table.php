@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -20,6 +21,15 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+
+        // usuário 1: dono das ações sem login (seeders, console, jobs) — nenhum log fica sem autor
+        DB::table('users')->insert([
+            'id' => 1,
+            'name' => 'Webmaster',
+            'email' => 'webmaster@escala.local',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();

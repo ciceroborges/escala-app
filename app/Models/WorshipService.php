@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['schedule_id', 'date', 'notes'])]
 class WorshipService extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected function casts(): array
     {
@@ -44,5 +45,10 @@ class WorshipService extends Model
         $ordinal = intdiv($this->date->day - 1, 7) + 1;
 
         return $ordinal.'º '.ucfirst($this->date->locale('pt_BR')->dayName);
+    }
+
+    public function activityLabel(): string
+    {
+        return "culto de {$this->date?->format('d/m/Y')}";
     }
 }

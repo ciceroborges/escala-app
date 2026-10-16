@@ -1,9 +1,52 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/forms';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../js/**/*.vue';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Paleta do alro (TailAdmin): brand azul, cinzas neutros */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+
+    --color-brand-25: #f2f7ff;
+    --color-brand-50: #ecf3ff;
+    --color-brand-100: #dde9ff;
+    --color-brand-200: #c2d6ff;
+    --color-brand-300: #9cb9ff;
+    --color-brand-400: #7592ff;
+    --color-brand-500: #465fff;
+    --color-brand-600: #3641f5;
+    --color-brand-700: #2a31d8;
+    --color-brand-800: #252dae;
+    --color-brand-900: #262e89;
+    --color-brand-950: #161950;
+}
+
+@layer base {
+    html { -webkit-tap-highlight-color: transparent; }
+    body { @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100; }
+    /* evita zoom do iOS ao focar input */
+    input, select, textarea { font-size: 16px; }
+}
+
+@layer components {
+    .menu-item {
+        @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150;
+    }
+    .menu-item-active { @apply bg-brand-50 text-brand-600 dark:bg-brand-950 dark:text-brand-400; }
+    .menu-item-inactive {
+        @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100;
+    }
+    .card { @apply rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-800/60; }
+    .label { @apply mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300; }
+    .input {
+        @apply block min-h-11 w-full rounded-lg border-gray-300 bg-white px-3 shadow-xs focus:border-brand-500 focus:ring-brand-500
+               dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100;
+    }
+    .hint { @apply mt-1 text-xs text-gray-500 dark:text-gray-400; }
+    .error { @apply mt-1 text-sm text-red-600 dark:text-red-400; }
+    .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
 }
